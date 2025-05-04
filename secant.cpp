@@ -1,41 +1,54 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <cmath>
+#include <iomanip>
+
 using namespace std;
 
-float f(float x)
-{
-
-	float f = pow(x, 3) + x - 1;
-	return f;
+double f(double x) {
+    return pow(x, 3) - 2 * x - 5; 
 }
 
-void secant(float x1, float x2, float E)
-{
-	float n = 0, xm, x0, c;
-	if (f(x1) * f(x2) < 0) {
-		do {
-			x0 = (x1 * f(x2) - x2 * f(x1)) / (f(x2) - f(x1));
+// Secant method implementation
+double secant(double x0, double x1, double tolerance, int maxIterations) {
+    int iteration = 0;
+    double x2;
 
-			c = f(x1) * f(x0);
+    while (iteration < maxIterations) {
+        x2 = x1 - (f(x1) * (x1 - x0)) / (f(x1) - f(x0));
 
-			x1 = x2;
-			x2 = x0;
+        if (fabs(x2 - x1) < tolerance) {
+            cout << "Root found after " << iteration + 1 << " iterations." << endl;
+            return x2;
+        }
 
-			n++;
+        x0 = x1;
+        x1 = x2;
+        iteration++;
+    }
 
-			if (c == 0)
-				break;
-			xm = (x1 * f(x2) - x2 * f(x1)) / (f(x2) - f(x1));
-		} while (fabs(xm - x0) >= E); 
-
-		cout << "Root of the given equation=" << x0 << endl;
-		cout << "No. of iterations = " << n << endl;
-	} else
-		cout << "Can not find a root in the given interval";
+    cout << "Secant method did not converge within " << maxIterations << " iterations." << endl;
+    return x1;
 }
 
-int main()
-{
-	float x1 = 0, x2 = 1, E = 0.0001;
-	secant(x1, x2, E);
-	return 0;
+int main() {
+    double x0, x1, tolerance;
+    int maxIterations;
+
+    cout << "Enter the first initial guess (x0): ";
+    cin >> x0;
+    cout << "Enter the second initial guess (x1): ";
+    cin >> x1;
+
+    cout << "Enter the tolerance (e.g., 0.0001): ";
+    cin >> tolerance;
+
+    cout << "Enter the maximum number of iterations: ";
+    cin >> maxIterations;
+
+    double root = secant(x0, x1, tolerance, maxIterations);
+
+    cout << fixed << setprecision(10);
+    cout << "Approximate root: " << root << endl;
+
+    return 0;
 }
